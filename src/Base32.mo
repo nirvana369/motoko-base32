@@ -31,7 +31,7 @@ module {
       case (#Crockford) { (CROCKFORD_ALPHABET, false); };
     };
     let len =(data.size() + 3)/4*5;
-    var ret: [var Nat8] = Array.init<Nat8>(8, 0);
+    var ret: [var Nat8] = Array.init<Nat8>(len, 0); // init byte array length 
     var res: Text = "";
     let chunks = bytesToChunks(data, 5);
     for (i in chunks.keys()) {
@@ -39,16 +39,14 @@ module {
       for (j in chunks[i].keys()) {
         buf[j] := chunks[i][j];
       };
-      // let retbuf: Buffer.Buffer<Nat8> = Buffer.Buffer(8);
-      // ret.add(alpha[Nat8.toNat((buf[0] & 0xF8) >> 3)]);
-      ret[0] := alpha[Nat8.toNat((buf[0] & 0xF8) >> 3)];
-      ret[1] := alpha[Nat8.toNat(((buf[0] & 0x07) << 2) | ((buf[1] & 0xC0) >> 6))];
-      ret[2] := alpha[Nat8.toNat((buf[1] & 0x3E) >> 1)];
-      ret[3] := alpha[Nat8.toNat(((buf[1] & 0x01) << 4) | ((buf[2] & 0xF0) >> 4))];
-      ret[4] := alpha[Nat8.toNat(((buf[2] & 0x0F) << 1) | (buf[3] >> 7))];
-      ret[5] := alpha[Nat8.toNat((buf[3] & 0x7C) >> 2)];
-      ret[6] := alpha[Nat8.toNat(((buf[3] & 0x03) << 3) | ((buf[4] & 0xE0) >> 5))];
-      ret[7] := alpha[Nat8.toNat(buf[4] & 0x1F)];
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat((buf[0] & 0xF8) >> 3)])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat(((buf[0] & 0x07) << 2) | ((buf[1] & 0xC0) >> 6))])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat((buf[1] & 0x3E) >> 1)])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat(((buf[1] & 0x01) << 4) | ((buf[2] & 0xF0) >> 4))])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat(((buf[2] & 0x0F) << 1) | (buf[3] >> 7))])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat((buf[3] & 0x7C) >> 2)])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat(((buf[3] & 0x03) << 3) | ((buf[4] & 0xE0) >> 5))])));
+      ret := Array.thaw(Array.append(Array.freeze(ret), Array.make(alpha[Nat8.toNat(buf[4] & 0x1F)])));
     };
     var len_ret: Nat = ret.size();
     if ((data.size() % 5) != 0) {
